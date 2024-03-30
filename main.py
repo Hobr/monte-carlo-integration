@@ -17,10 +17,12 @@ def func(x):
 
 # 蒙特卡洛
 ## 参数: 函数, 区间左, 区间右, 次数
-@jit(nopython=True)
+@jit(nopython=True, parallel=True)
 def monte(func, bottom, top, times):
     x = np.random.uniform(bottom, top, times)
+    print(x)
     y = func(x)
+    print(y)
     dist = np.multiply(np.mean(y), np.subtract(top, bottom))
     return dist
 

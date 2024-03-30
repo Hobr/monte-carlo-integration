@@ -1,4 +1,4 @@
-{pkgs ? import <nixpkgs> {}}:
+{pkgs ? (import <nixpkgs> {config.allowUnfree = true;}), ...}:
 pkgs.mkShell {
   packages = [
     (pkgs.python3.withPackages (python-pkgs: [
@@ -11,7 +11,6 @@ pkgs.mkShell {
       python-pkgs.flake8
       python-pkgs.pip
       python-pkgs.cupy
-      python-pkgs.pycuda
     ]))
     pkgs.julia
   ];

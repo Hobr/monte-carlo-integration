@@ -7,12 +7,12 @@
 ## 实现
 
 - 最简单实现
-- 并行计算实现
-- CPU特性加速
-- AVX
+- 向量化
+- 并行计算
+- CPU特性/AVX
 - Cython
-- 函数向量化
 - Numba CUDA
+- 算法
 
 ## TODO
 
@@ -47,6 +47,7 @@ python main.py
 
 ## 参考
 
+<https://www.labri.fr/perso/nrougier/from-python-to-numpy/>
 <https://www.zhihu.com/question/67310504>
 <https://www.nvidia.cn/glossary/data-science/numpy/>
 <https://developer.nvidia.com/blog/numba-python-cuda-acceleration/>
