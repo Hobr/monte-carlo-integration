@@ -10,7 +10,6 @@ pkgs.mkShell {
       python-pkgs.black
       python-pkgs.flake8
       python-pkgs.pip
-      python-pkgs.cupy
     ]))
     pkgs.julia
   ];
