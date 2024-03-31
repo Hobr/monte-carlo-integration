@@ -1,5 +1,5 @@
 {
-  pkgs ? (import <nixpkgs-unstable> {
+  pkgs ? (import <nixpkgs> {
     config.allowUnfree = true;
     cudaSupport = true;
   }),
@@ -16,6 +16,7 @@ pkgs.mkShell {
       python-pkgs.numbaWithCuda
       python-pkgs.matplotlib
       python-pkgs.cupy
+      python-pkgs.scipy
     ]))
     pkgs.julia
     pkgs.cudatoolkit
