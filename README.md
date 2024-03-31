@@ -8,7 +8,6 @@
 
 - 最简单实现
 - 向量化
-- 并行计算
 - CPU特性(AVX/SIMD)
 - Cython
 - Numba CUDA
@@ -16,10 +15,8 @@
 
 ## TODO
 
-- 多线程
 - 画图
 - PyPy
-- 性能
 - PPT/Word
 
 ## 使用
