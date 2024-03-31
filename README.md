@@ -9,7 +9,7 @@
 - 最简单实现
 - 向量化
 - 并行计算
-- CPU特性/AVX
+- CPU特性(AVX/SIMD)
 - Cython
 - Numba CUDA
 - 算法
