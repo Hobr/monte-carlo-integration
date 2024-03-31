@@ -26,29 +26,29 @@ def func(x):
     )
 
 
-# 1.常规实现+多线程
-## 参数:下标, 上标, 次数
+# 常规实现+多线程
 @jit(nopython=True, parallel=True)
-def simple(bottom, top, times):
+def simple():
+    # 均匀分布中生成x
     x = np.random.uniform(bottom, top, times)
+    # 计算y
     y = func(x)
+    # y的平均数*(top-bottom)
     dist = np.multiply(np.mean(y), np.subtract(top, bottom))
     return dist
 
 
-# 2.向量化
+# 重要性采样
 
-# 3.AVX+SIMD
+# 分层采样
 
-# 4.Cython
+# 遗传算法
 
-# 5.CUDA
+# AVX+SIMD
 
-# 6.重要性采样
+# Cython
 
-# 7.分层采样
-
-# 7.遗传算法
+# CUDA
 
 for i in range(for_time):
-    print(simple(bottom, top, times))
+    print(simple())

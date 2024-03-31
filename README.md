@@ -15,7 +15,11 @@
 
 ## TODO
 
+- 误差
 - 画图
+    - 不同方法速度对比
+    - x
+    - 不同方法得出的积分+正确值
 - PyPy
 - PPT/Word
 
@@ -54,3 +58,4 @@ python main.py
 <https://developer.nvidia.com/blog/gpu-accelerated-graph-analytics-python-numba/>
 <https://numpy.org/doc/stable/reference/simd/build-options.html>
 <https://numba.pydata.org/numba-doc/latest/cuda/overview.html#terminology>
+<https://cuda.juliagpu.org/stable/>
