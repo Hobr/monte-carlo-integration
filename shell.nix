@@ -1,7 +1,6 @@
 {
   pkgs ? (import <nixpkgs-unstable> {
     config.allowUnfree = true;
-    cudaSupport = true;
   }),
   ...
 }:
