@@ -1,8 +1,8 @@
-import time
+from timeit import timeit
 
 import matplotlib.pyplot as plt
-import numpy as np
-from numba import jit
+import numpy as np,
+from numba import jit,cuda
 
 # 下标(x最小值)
 bottom = 0
@@ -13,7 +13,7 @@ times = 10**9
 # 分层数(分层采样)
 layers = 100
 # 总执行次数
-for_time = 3
+for_time = 1
 
 
 # 函数式
@@ -35,14 +35,27 @@ def simple():
     y = func(x)
     # y的平均数*(top-bottom)
     dist = np.multiply(np.mean(y), np.subtract(top, bottom))
+    print(dist)
     return dist
 
 
 # 重要性采样
+@jit(nopython=True, parallel=True)
+def important():
+    pass
+
 
 # 分层采样
+@jit(nopython=True, parallel=True)
+def layer():
+    pass
+
 
 # 遗传算法
+@jit(nopython=True, parallel=True)
+def gene():
+    pass
+
 
 # AVX+SIMD
 
@@ -50,5 +63,4 @@ def simple():
 
 # CUDA
 
-for i in range(for_time):
-    print(simple())
+print(timeit("simple()", globals=globals(), number=for_time))
