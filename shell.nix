@@ -14,6 +14,7 @@ pkgs.mkShell {
       python-pkgs.pip
       python-pkgs.numpy
       python-pkgs.numbaWithCuda
+      python-pkgs.numba
       python-pkgs.matplotlib
       python-pkgs.cupy
       python-pkgs.scipy
