@@ -4,13 +4,13 @@ import numpy as np
 from numba import jit
 
 # 层数(分层采样)/代数(遗传算法)
-layers = 10000
+layers = 10**4
 # 变异率(遗传算法)
 mutation = 0.2
 
 # 总执行次数
 for_time = 1
-# 随机数(x)生成次数
+# 随机数生成次数
 times = 10**9
 
 # 下标(x最小值)
@@ -29,14 +29,14 @@ def func(x):
     )
 
 
-# 常规实现+多线程
+# 常规实现
 @jit(nopython=True, parallel=True)
 def simple():
     # 在均匀分布中生成x
     x = np.random.uniform(bottom, top, times)
     # 计算y
     y = func(x)
-    # y的平均数*(top-bottom)
+    # y的平均数*(top-bottom) 积分中值
     dist = np.multiply(np.mean(y), np.subtract(top, bottom))
 
     print(dist)
@@ -81,42 +81,25 @@ def layer():
 # 遗传算法
 @jit(nopython=True, parallel=True)
 def gene():
-    best_dist = None
-    best_sample = None
-
-    for _ in np.arange(layers):
-        sample = np.random.uniform(bottom, top, times)
-        dist = np.mean(func(sample))
-
-        if best_dist is None or dist < best_dist:
-            best_dist = dist
-            best_sample = sample
-
-        # 变异
-        mutate_sample = sample + np.random.normal(0, mutation, times)
-        mutate_sample = np.clip(mutate_sample, bottom, top)
-        mutate_dist = np.mean(func(mutate_sample))
-
-        if mutate_dist < dist:
-            sample = mutate_sample
-            dist = mutate_dist
-
-        if dist < best_dist:
-            best_dist = dist
-            best_sample = sample
-
-    real_dist = best_dist * (top - bottom)
-
-    print(real_dist)
-    return real_dist
+    pass
 
 
 # CuPy(CUDA)
 
 # Numba(CUDA)
 
+print(
+    "层数(分层采样)/代数(遗传算法):",
+    layers,
+    "\n变异率(遗传算法):",
+    mutation,
+    "\n总执行次数",
+    for_time,
+    "\n随机数生成次数",
+    times,
+)
 print("===========CPU执行===========")
 print("一般实现时间:", timeit("simple()", globals=globals(), number=for_time))
 print("重要性采样时间:", timeit("important()", globals=globals(), number=for_time))
 print("分层采样时间:", timeit("layer()", globals=globals(), number=for_time))
-#print("遗传算法时间:", timeit("jit()", globals=globals(), number=for_time))
+# print("遗传算法时间:", timeit("jit()", globals=globals(), number=for_time))
