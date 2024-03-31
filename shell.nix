@@ -6,20 +6,18 @@
   ...
 }:
 pkgs.mkShell {
-  packages = [
-    (pkgs.python3.withPackages (python-pkgs: [
-      python-pkgs.isort
-      python-pkgs.black
-      python-pkgs.flake8
-      python-pkgs.pip
-      python-pkgs.numpy
-      python-pkgs.numbaWithCuda
-      python-pkgs.numba
-      python-pkgs.matplotlib
-      python-pkgs.cupy
-      python-pkgs.scipy
+  packages = with pkgs; [
+    (python3.withPackages (python-pkgs: with python-pkgs; [
+      isort
+      black
+      flake8
+      pip
+      numpy
+      numbaWithCuda
+      matplotlib
+      cupy
+      scipy
     ]))
-    pkgs.julia
-    pkgs.cudatoolkit
+    julia
   ];
 }
