@@ -1,5 +1,5 @@
 {
-  pkgs ? (import <nixpkgs> {
+  pkgs ? (import <nixpkgs-unstable> {
     config.allowUnfree = true;
     cudaSupport = true;
   }),
@@ -13,11 +13,11 @@ pkgs.mkShell {
       python-pkgs.flake8
       python-pkgs.pip
       python-pkgs.numpy
-      python-pkgs.numba
+      python-pkgs.numbaWithCuda
       python-pkgs.matplotlib
+      python-pkgs.cupy
     ]))
     pkgs.julia
     pkgs.cudatoolkit
-    #pkgs.linuxPackages.nvidia_x11
   ];
 }

@@ -1,7 +1,7 @@
 from timeit import timeit
 
 import matplotlib.pyplot as plt
-import numpy as np,
+import numpy as np
 from numba import jit,cuda
 
 # 下标(x最小值)
@@ -59,8 +59,8 @@ def gene():
 
 # AVX+SIMD
 
-# Cython
+# CuPy(CUDA)
 
-# CUDA
+# Numba(CUDA)
 
 print(timeit("simple()", globals=globals(), number=for_time))
