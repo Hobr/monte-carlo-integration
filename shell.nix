@@ -12,7 +12,6 @@ pkgs.mkShell {
       black
       flake8
       pip
-      numpy
       numbaWithCuda
       matplotlib
       cupy
