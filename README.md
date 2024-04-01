@@ -24,8 +24,10 @@ export JULIA_PKG_SERVER=https://mirrors.ustc.edu.cn/julia
 julia
 ]add Distributions JuliaFormatter
 using JuliaFormatter
-format_file("main.jl")
-include("main.jl")
+format_file("cpu.jl")
+format_file("gpu.jl")
+include("cpu.jl")
+include("gpu.jl")
 exit()
 ```
 
@@ -33,9 +35,10 @@ exit()
 
 ```bash
 pip install -r requirements.txt
-black main.py
-isort main.py
-python main.py
+black *.py
+isort *.py
+python cpu.py
+python gpu.py
 ```
 
 ## 参考
