@@ -1,6 +1,5 @@
 from timeit import timeit
 
-# import cupy as np
 import numpy as np
 from numba import jit
 
@@ -17,85 +16,77 @@ bottom = 0
 top = 2 * np.pi
 
 
-# 函数式
-## y(x) = 2sin(x) (x^3+ x^2+ 2x+ 3)
-@jit(nopython=True, parallel=True)
-def func(x):
-    return np.multiply(
-        np.multiply(np.sin(x), 2),
-        np.add(np.add(np.power(x, 3), np.power(x, 2)), np.add(np.multiply(x, 2), 3)),
-    )
-
-
-# 常规实现
-@jit(nopython=True, parallel=True)
-def simple():
-    # 在均匀分布中生成x
-    random_x = np.random.uniform(bottom, top, times)
-    # 计算y/积分和
-    integ_sum = func(random_x)
-    # y的平均数*(top-bottom) 积分中值
-    dist = np.multiply(np.mean(integ_sum), np.subtract(top, bottom))
-
-    print(dist)
-    return dist
-
-
-# 重要性采样
-@jit(nopython=True, parallel=True)
-def important():
-    # 在均匀分布中生成x
-    y = np.random.uniform(bottom, top, times)
-    # 计算函数值与概率分布值的比例
-    ## 概率分布函数: 1/2pi,即均匀分布
-    ## func(y) / (1 / (2 * np.pi))
-    percent = np.divide(func(y), np.divide(1, np.multiply(2, np.pi)))
-    # 积分值
-    dist = np.mean(percent)
-
-    print(dist)
-    return dist
-
-
-# 分层采样
-@jit(nopython=True, parallel=True)
-def layer():
-    dist = 0.0
-    for i in np.arange(layers):
-        # 单层随机数
-        lay_sample = np.random.uniform(
-            # bottom + i * (top - bottom) / layers
-            np.add(bottom, np.multiply(i, np.divide(np.subtract(top, bottom), layers))),
-            # bottom + (i + 1) * (top - bottom) / layers,
+class cpu_cal:
+    # 函数式
+    ## y(x) = 2sin(x) (x^3+ x^2+ 2x+ 3)
+    @jit(nopython=True, parallel=True)
+    def func(x):
+        return np.multiply(
+            np.multiply(np.sin(x), 2),
             np.add(
-                bottom,
-                np.multiply(np.add(i, 1), np.divide(np.subtract(top, bottom), layers)),
+                np.add(np.power(x, 3), np.power(x, 2)), np.add(np.multiply(x, 2), 3)
             ),
-            # times // layers,
-            np.floor_divide(times, layers),
-        )
-        # 单层积分
-        lay_dist = np.mean(func(lay_sample))
-        # 加权平均区间积分
-        # dist += lay_dist * (top - bottom) / layers
-        dist = np.add(
-            dist, np.multiply(lay_dist, np.divide(np.subtract(top, bottom), layers))
         )
 
-    print(dist)
-    return dist
+    # 常规实现
+    @jit(nopython=True, parallel=True)
+    def simple():
+        # 在均匀分布中生成x
+        random_x = np.random.uniform(bottom, top, times)
+        # 计算y/积分和
+        integ_sum = func(random_x)
+        # y的平均数*(top-bottom) 积分中值
+        dist = np.multiply(np.mean(integ_sum), np.subtract(top, bottom))
 
+        print(dist)
+        return dist
 
-# Numba(CUDA)
-@jit(nopython=True, parallel=True)
-def numba_cuda():
-    pass
+    # 重要性采样
+    @jit(nopython=True, parallel=True)
+    def important():
+        # 在均匀分布中生成x
+        y = np.random.uniform(bottom, top, times)
+        # 计算函数值与概率分布值的比例
+        ## 概率分布函数: 1/2pi,即均匀分布
+        ## func(y) / (1 / (2 * np.pi))
+        percent = np.divide(func(y), np.divide(1, np.multiply(2, np.pi)))
+        # 积分值
+        dist = np.mean(percent)
 
+        print(dist)
+        return dist
 
-# CuPy(CUDA)
-@jit(nopython=True, parallel=True)
-def cupy_cuda():
-    pass
+    # 分层采样
+    @jit(nopython=True, parallel=True)
+    def layer():
+        dist = 0.0
+        for i in np.arange(layers):
+            # 单层随机数
+            lay_sample = np.random.uniform(
+                # bottom + i * (top - bottom) / layers
+                np.add(
+                    bottom, np.multiply(i, np.divide(np.subtract(top, bottom), layers))
+                ),
+                # bottom + (i + 1) * (top - bottom) / layers,
+                np.add(
+                    bottom,
+                    np.multiply(
+                        np.add(i, 1), np.divide(np.subtract(top, bottom), layers)
+                    ),
+                ),
+                # times // layers,
+                np.floor_divide(times, layers),
+            )
+            # 单层积分
+            lay_dist = np.mean(func(lay_sample))
+            # 加权平均区间积分
+            # dist += lay_dist * (top - bottom) / layers
+            dist = np.add(
+                dist, np.multiply(lay_dist, np.divide(np.subtract(top, bottom), layers))
+            )
+
+        print(dist)
+        return dist
 
 
 print(
