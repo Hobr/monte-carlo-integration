@@ -1,7 +1,7 @@
 from timeit import timeit
 
 import numpy as np
-from numba import jit
+from numba import jit,cuda
 
 # 层数(分层采样)/代数(遗传算法)
 layers = 10**4
@@ -84,9 +84,15 @@ def gene():
     pass
 
 
-# CuPy(CUDA)
-
 # Numba(CUDA)
+@cuda.jit(device=True)
+def numba_cuda():
+    pass
+
+# CuPy(CUDA)
+def cupy_cuda():
+    pass
+
 
 print(
     "层数(分层采样)/代数(遗传算法):",
