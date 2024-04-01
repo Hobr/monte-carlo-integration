@@ -1,4 +1,4 @@
-black==23.9.1
+black==24.3.0
 click==8.1.7
 contourpy==1.1.0
 cupy==12.2.0
