@@ -16,12 +16,15 @@
     flake-utils.lib.eachDefaultSystem (system: let
       pkgs = import nixpkgs {
         inherit system;
+        config.allowUnfree = true;
       };
       unstable = import nixpkgs-unstable {
         inherit system;
+        config.allowUnfree = true;
       };
       chao = import chaotic {
         inherit system;
+        config.allowUnfree = true;
       };
     in {
       devShells.default = pkgs.mkShell {
@@ -56,12 +59,9 @@
           ++ (
             with chao; [linuxPackages.nvidia_x11]
           );
-
-        NIXPKGS_ALLOW_UNFREE = "1";
-
         shellHook = ''
-          export CUDA_PATH=${nixpkgs.cudatoolkit}
-          export LD_LIBRARY_PATH=${chao.linuxPackages.nvidia_x11}/lib:${nixpkgs.ncurses5}/lib
+          export CUDA_PATH=${unstable.cudatoolkit}
+          export LD_LIBRARY_PATH=${chao.linuxPackages.nvidia_x11}/lib:${unstable.ncurses5}/lib
           export EXTRA_LDFLAGS="-L/lib -L${chao.linuxPackages.nvidia_x11}/lib"
           export EXTRA_CCFLAGS="-I/usr/include"
         '';
