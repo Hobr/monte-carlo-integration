@@ -1,5 +1,5 @@
 {
-  pkgs ? (import <nixpkgs-unstable> {
+  pkgs ? (import <nixpkgs> {
     config.allowUnfree = true;
     cudaSupport = true;
   }),
@@ -43,7 +43,7 @@ pkgs.mkShell {
         pip
         numbaWithCuda
         matplotlib
-        #cupy
+        cupy
         scipy
         tqdm
       ]))
