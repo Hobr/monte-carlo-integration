@@ -1,7 +1,8 @@
 from timeit import timeit
 
-import numpy as np
-from numba import jit,cuda
+# import numpy as np
+import cupy as np
+from numba import jit, cuda
 
 # 层数(分层采样)/代数(遗传算法)
 layers = 10**4
@@ -21,7 +22,7 @@ top = 2 * np.pi
 
 # 函数式
 ## y(x) = 2sin(x) (x^3+ x^2+ 2x+ 3)
-@jit(nopython=True, parallel=True)
+# @jit(nopython=True, parallel=True)
 def func(x):
     return np.multiply(
         np.multiply(np.sin(x), 2),
@@ -30,7 +31,7 @@ def func(x):
 
 
 # 常规实现
-@jit(nopython=True, parallel=True)
+# @jit(nopython=True, parallel=True)
 def simple():
     # 在均匀分布中生成x
     x = np.random.uniform(bottom, top, times)
@@ -44,7 +45,7 @@ def simple():
 
 
 # 重要性采样
-@jit(nopython=True, parallel=True)
+# @jit(nopython=True, parallel=True)
 def important():
     # 在均匀分布中生成x
     y = np.random.uniform(bottom, top, times)
@@ -59,7 +60,7 @@ def important():
 
 
 # 分层采样
-@jit(nopython=True, parallel=True)
+# @jit(nopython=True, parallel=True)
 def layer():
     dist = 0.0
     for i in np.arange(layers):
@@ -79,17 +80,19 @@ def layer():
 
 
 # 遗传算法
-@jit(nopython=True, parallel=True)
+# @jit(nopython=True, parallel=True)
 def gene():
     pass
 
 
 # Numba(CUDA)
-@cuda.jit(device=True)
+# @jit(nopython=True, parallel=True)
 def numba_cuda():
     pass
 
+
 # CuPy(CUDA)
+# @jit(nopython=True, parallel=True)
 def cupy_cuda():
     pass
 
