@@ -45,6 +45,7 @@ pkgs.mkShell {
         matplotlib
         #cupy
         scipy
+        tqdm
       ]))
   ];
   shellHook = ''
