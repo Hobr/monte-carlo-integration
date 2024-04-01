@@ -22,7 +22,7 @@ in
               black
               flake8
               pip
-              numba
+              numbaWithCuda
               cupy
               matplotlib
               scipy
