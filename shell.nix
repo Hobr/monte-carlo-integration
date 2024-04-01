@@ -13,9 +13,6 @@ in
     buildInputs =
       (
         with pkgs; [
-          julia
-          cudatoolkit
-          cudaPackages.cudnn
           (python3.withPackages (python-pkgs:
             with python-pkgs; [
               isort
@@ -32,6 +29,9 @@ in
       ++ (
         with pkg-unstable; [
           linuxPackages.nvidia_x11
+          julia
+          cudatoolkit
+          cudaPackages.cudnn
         ]
       );
     shellHook = ''
