@@ -158,9 +158,9 @@ for i in range(total_run):
     print("======== CPU第", i, "次执行 ========")
     print("______________第一阶段______________")
     print("一般方法Numba开启与否时的运行情况")
-    #cpu_time, result = calculate_cpu_time(dis_simple, dis_func, bottom, top, sample_num)
-    #print("无Numba:", cpu_time, "值:", result)
-    #time.sleep(3)
+    # cpu_time, result = calculate_cpu_time(dis_simple, dis_func, bottom, top, sample_num)
+    # print("无Numba:", cpu_time, "值:", result)
+    # time.sleep(3)
 
     cpu_time, result = calculate_cpu_time(simple, enab_func, bottom, top, sample_num)
     print("有Numba:", cpu_time, "值:", result)

@@ -19,7 +19,7 @@ in
               black
               flake8
               pip
-              numbaWithCuda
+              numba
               cupy
               matplotlib
             ]))
