@@ -188,37 +188,37 @@ for i in range(total_run):
     print("______________第三阶段______________")
     print("多个算法间的速度 结果 x y拟合")
     cpu_time, result = calculate_cpu_time(
-        simple, vec_enab_func, bottom, top, sample_num
+        simple, nor_enab_func, bottom, top, sample_num
     )
     print("一般实现时间:", cpu_time, "值:", result)
     time.sleep(3)
 
     cpu_time, result = calculate_cpu_time(
-        important, vec_enab_func, bottom, top, sample_num
+        important, nor_enab_func, bottom, top, sample_num
     )
     print("重要性采样时间:", cpu_time, "值:", result)
     time.sleep(3)
 
     cpu_time, result = calculate_cpu_time(
-        layer, vec_enab_func, bottom, top, sample_num, layers
+        layer, nor_enab_func, bottom, top, sample_num, layers
     )
     print("分层抽样时间:", cpu_time, "值:", result)
     time.sleep(3)
 
     # cpu_time, result = calculate_cpu_time(
-    #    cuda_simple, vec_enab_func, bottom, top, sample_num
+    #    cuda_simple, nor_enab_func, bottom, top, sample_num
     # )
     # print("CUDA 一般实现时间:", cpu_time, "值:", result)
     # time.sleep(3)
 
     # cpu_time, result = calculate_cpu_time(
-    #    cuda_important, vec_enab_func, bottom, top, sample_num
+    #    cuda_important, nor_enab_func, bottom, top, sample_num
     # )
     # print("CUDA 重要性采样时间:", cpu_time, "值:", result)
     # time.sleep(3)
 
     # cpu_time, result = calculate_cpu_time(
-    #    cuda_layer, vec_enab_func, bottom, top, sample_num, layers
+    #    cuda_layer, nor_enab_func, bottom, top, sample_num, layers
     # )
     # print("CUDA 分层抽样时间:", cpu_time, "值:", result)
     # time.sleep(3)
@@ -230,37 +230,37 @@ for i in range(total_run):
         for_layers = 10 ** (i // 2)
         print("样本个数", for_num)
         cpu_time, result = calculate_cpu_time(
-            simple, vec_enab_func, bottom, top, for_num
+            simple, nor_enab_func, bottom, top, for_num
         )
         print("一般实现时间:", cpu_time, "值:", result)
         time.sleep(3)
 
         cpu_time, result = calculate_cpu_time(
-            important, vec_enab_func, bottom, top, for_num
+            important, nor_enab_func, bottom, top, for_num
         )
         print("重要性采样时间:", cpu_time, "值:", result)
         time.sleep(3)
 
         cpu_time, result = calculate_cpu_time(
-            layer, vec_enab_func, bottom, top, for_num, for_layers
+            layer, nor_enab_func, bottom, top, for_num, for_layers
         )
         print("分层抽样时间:", cpu_time, "值:", result)
         time.sleep(3)
 
         # cpu_time, result = calculate_cpu_time(
-        #    cuda_simple, vec_enab_func, bottom, top, for_num
+        #    cuda_simple, nor_enab_func, bottom, top, for_num
         # )
         # print("CUDA 一般实现时间:", cpu_time, "值:", result)
         # time.sleep(3)
 
         # cpu_time, result = calculate_cpu_time(
-        #    cuda_important, vec_enab_func, bottom, top, for_num
+        #    cuda_important, nor_enab_func, bottom, top, for_num
         # )
         # print("CUDA 重要性采样时间:", cpu_time, "值:", result)
         # time.sleep(3)
 
         # cpu_time, result = calculate_cpu_time(
-        #    cuda_layer, vec_enab_func, bottom, top, for_num, for_layer
+        #    cuda_layer, nor_enab_func, bottom, top, for_num, for_layer
         # )
         # print("CUDA 分层抽样时间:", cpu_time, "值:", result)
         # time.sleep(3)
