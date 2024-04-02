@@ -65,7 +65,6 @@ python main.py
 <https://github.com/ContinuumIO/gtc2017-numba>
 <https://developer.nvidia.com/blog/seven-things-numba/>
 <https://developer.nvidia.com/blog/gpu-accelerated-graph-analytics-python-numba/>
-<https://numpy.org/doc/stable/reference/simd/build-options.html>
 <https://numba.pydata.org/numba-doc/latest/cuda/overview.html#terminology>
 <https://numpy.org/doc/stable/user/absolute_beginners.html#plotting-arrays-with-matplotlib>
 <https://cuda.juliagpu.org/stable/>

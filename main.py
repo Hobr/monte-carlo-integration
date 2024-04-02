@@ -1,8 +1,9 @@
 import time
 
+import cupy as cp
 import matplotlib.pyplot as plt
 import numpy as np
-from numba import cuda, jit
+from numba import jit
 
 # 下标(x最小值)
 bottom = 0
@@ -33,13 +34,6 @@ def enab_func(x):
     return 2 * np.sin(x) * (x**3 + x**2 + 2 * x + 3)
 
 
-# 普通函数式 有CUDA
-## y = 2 * sin(x) * (x**3 + x**2 + 2 * x + 3)
-@cuda.jit(device=True)
-def enab_func(x):
-    return 2 * np.sin(x) * (x**3 + x**2 + 2 * x + 3)
-
-
 # 常规实现 无Numba
 ## 参数:随机数函数,最小值,最大值,样本量
 def dis_simple(random_func, bottom, top, sample_num):
@@ -66,10 +60,18 @@ def simple(random_func, bottom, top, sample_num):
 
 
 # 常规实现 有CUDA
-## 参数:随机数函数,最小值,最大值,样本量
-@cuda.jit
-def cuda_simple(random_func, bottom, top, sample_num):
-    pass
+## 参数:随机数函数,最小值,最大值,样本量,计算网格
+def cuda_simple(bottom, top, sample_num):
+    def func(x):
+        return 2 * cp.sin(x) * (x**3 + x**2 + 2 * x + 3)
+
+    # 在均匀分布中生成x
+    random_x = cp.random.uniform(bottom, top, sample_num)
+    # 计算y/积分和
+    integ_sum = func(random_x)
+    # 积分中值
+    dist = cp.mean(integ_sum) * (top - bottom)
+    return dist
 
 
 # 重要性采样
@@ -88,9 +90,18 @@ def important(random_func, bottom, top, sample_num):
 
 # 重要性采样 有CUDA
 ## 参数:随机数函数,最小值,最大值,样本量
-@cuda.jit
-def cuda_important(random_func, bottom, top, sample_num):
-    pass
+def cuda_important(bottom, top, sample_num):
+    def func(x):
+        return 2 * cp.sin(x) * (x**3 + x**2 + 2 * x + 3)
+
+    # 在均匀分布中生成x
+    y = cp.random.uniform(bottom, top, sample_num)
+    # 计算函数值与概率分布值的比例
+    ## 概率分布函数: 1/2pi,即均匀分布
+    percent = func(y) / (1 / (2 * cp.pi))
+    # 积分值
+    dist = cp.mean(percent)
+    return dist
 
 
 # 分层采样
@@ -114,9 +125,23 @@ def layer(random_func, bottom, top, sample_num, layers):
 
 # 分层采样 有CUDA
 ## 参数:随机数函数,最小值,最大值,样本量,分层层数
-@cuda.jit
-def cuda_layer(random_func, bottom, top, sample_num, layers):
-    pass
+def cuda_layer(bottom, top, sample_num, layers):
+    def func(x):
+        return 2 * cp.sin(x) * (x**3 + x**2 + 2 * x + 3)
+
+    dist = 0.0
+    for i in cp.arange(layers):
+        # 单层随机数
+        lay_sample = cp.random.uniform(
+            bottom + i * (top - bottom) / layers,
+            bottom + (i + 1) * (top - bottom) / layers,
+            sample_num // layers,
+        )
+        # 单层积分
+        lay_dist = cp.mean(func(lay_sample))
+        # 加权平均区间积分
+        dist += lay_dist * (top - bottom) / layers
+    return dist
 
 
 # 总执行次数
@@ -132,10 +157,10 @@ print("总执行次数", total_run, ",样本个数", sample_num, ",分层层数:
 for i in range(total_run):
     print("======== CPU第", i, "次执行 ========")
     print("______________第一阶段______________")
-    # print("一般方法Numba开启与否时的运行情况")
-    # cpu_time, result = calculate_cpu_time(dis_simple, dis_func, bottom, top, sample_num)
-    # print("无Numba:", cpu_time, "值:", result)
-    # time.sleep(3)
+    print("一般方法Numba开启与否时的运行情况")
+    #cpu_time, result = calculate_cpu_time(dis_simple, dis_func, bottom, top, sample_num)
+    #print("无Numba:", cpu_time, "值:", result)
+    #time.sleep(3)
 
     cpu_time, result = calculate_cpu_time(simple, enab_func, bottom, top, sample_num)
     print("有Numba:", cpu_time, "值:", result)
@@ -157,27 +182,23 @@ for i in range(total_run):
     print("分层抽样时间:", cpu_time, "值:", result)
     time.sleep(3)
 
-    # cpu_time, result = calculate_cpu_time(
-    #    cuda_simple, cuda_func, bottom, top_cuda, sample_num
-    # )
-    # print("CUDA 一般实现时间:", cpu_time, "值:", result)
-    # time.sleep(3)
+    cpu_time, result = calculate_cpu_time(cuda_simple, bottom, 2 * np.pi, sample_num)
+    print("CUDA 一般实现时间:", cpu_time, "值:", result)
+    time.sleep(3)
 
-    # cpu_time, result = calculate_cpu_time(
-    #    cuda_important, cuda_func, bottom, top_cuda, sample_num
-    # )
-    # print("CUDA 重要性采样时间:", cpu_time, "值:", result)
-    # time.sleep(3)
+    cpu_time, result = calculate_cpu_time(cuda_important, bottom, 2 * np.pi, sample_num)
+    print("CUDA 重要性采样时间:", cpu_time, "值:", result)
+    time.sleep(3)
 
-    # cpu_time, result = calculate_cpu_time(
-    #    cuda_layer, cuda_func, bottom, top_cuda, sample_num, layers
-    # )
-    # print("CUDA 分层抽样时间:", cpu_time, "值:", result)
-    # time.sleep(3)
+    cpu_time, result = calculate_cpu_time(
+        cuda_layer, bottom, 2 * np.pi, sample_num, layers
+    )
+    print("CUDA 分层抽样时间:", cpu_time, "值:", result)
+    time.sleep(3)
 
     print("______________第三阶段______________")
     print("单个方法在不同样本量下的结果区别")
-    for i in range(4, 9):
+    for i in range(4, 8):
         for_num = 10 ** (i + 1)
         for_layers = 10 ** (i // 2)
         print("样本个数", for_num)
@@ -197,20 +218,18 @@ for i in range(total_run):
         print("分层抽样时间:", cpu_time, "层数:", for_layers, "值:", result)
         time.sleep(3)
 
-        # cpu_time, result = calculate_cpu_time(
-        #    cuda_simple, cuda_func, bottom, top_cuda, for_num
-        # )
-        # print("CUDA 一般实现时间:", cpu_time, "值:", result)
-        # time.sleep(3)
+        cpu_time, result = calculate_cpu_time(cuda_simple, bottom, 2 * np.pi, for_num)
+        print("CUDA 一般实现时间:", cpu_time, "值:", result)
+        time.sleep(3)
 
-        # cpu_time, result = calculate_cpu_time(
-        #    cuda_important, cuda_func, bottom, top_cuda, for_num
-        # )
-        # print("CUDA 重要性采样时间:", cpu_time, "值:", result)
-        # time.sleep(3)
+        cpu_time, result = calculate_cpu_time(
+            cuda_important, bottom, 2 * np.pi, for_num
+        )
+        print("CUDA 重要性采样时间:", cpu_time, "值:", result)
+        time.sleep(3)
 
-        # cpu_time, result = calculate_cpu_time(
-        #    cuda_layer, cuda_func, bottom, top_cuda, for_num, for_layer
-        # )
-        # print("CUDA 分层抽样时间:", cpu_time, "层数:", for_layers, "值:", result)
-        # time.sleep(3)
+        cpu_time, result = calculate_cpu_time(
+            cuda_layer, bottom, 2 * np.pi, for_num, layers
+        )
+        print("CUDA 分层抽样时间:", cpu_time, "层数:", for_layers, "值:", result)
+        time.sleep(3)
