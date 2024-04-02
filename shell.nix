@@ -20,7 +20,6 @@ in
               flake8
               pip
               numbaWithCuda
-              cupy
               matplotlib
             ]))
         ]

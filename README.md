@@ -11,7 +11,6 @@
 1. 无Numba 
 2. Numba
 3. Numba+CUDA
-4. CuPy
 
 ### 横向
 
