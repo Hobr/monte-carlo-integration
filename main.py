@@ -32,32 +32,32 @@ def enab_func(x):
 
 
 # 常规实现 无Numba
-## 参数:随机数函数,最小值,最大值,样本量
-def dis_simple(random_func, bottom, top, sample_num):
+## 参数:原函数,最小值,最大值,样本量
+def dis_simple(funct, bottom, top, sample_num):
     # 在均匀分布中生成x
     random_x = np.random.uniform(bottom, top, sample_num)
     # 计算y/积分和
-    integ_sum = random_func(random_x)
+    integ_sum = funct(random_x)
     # 积分中值
     dist = np.mean(integ_sum) * (top - bottom)
     return dist
 
 
 # 常规实现 有Numba
-## 参数:随机数函数,最小值,最大值,样本量
+## 参数:原函数,最小值,最大值,样本量
 @jit(nopython=True, nogil=True, parallel=True)
-def simple(random_func, bottom, top, sample_num):
+def simple(funct, bottom, top, sample_num):
     # 在均匀分布中生成x
     random_x = np.random.uniform(bottom, top, sample_num)
     # 计算y/积分和
-    integ_sum = random_func(random_x)
+    integ_sum = funct(random_x)
     # 积分中值
     dist = np.mean(integ_sum) * (top - bottom)
     return dist
 
 
 # 常规实现 有CUDA
-## 参数:随机数函数,最小值,最大值,样本量,计算网格
+## 参数:原函数,最小值,最大值,样本量,计算网格
 def cuda_simple(bottom, top, sample_num):
     def func(x):
         return 2 * cp.sin(x) * (x**3 + x**2 + 2 * x + 3)
@@ -72,21 +72,21 @@ def cuda_simple(bottom, top, sample_num):
 
 
 # 重要性采样
-## 参数:随机数函数,最小值,最大值,样本量
+## 参数:原函数,最小值,最大值,样本量
 @jit(nopython=True, nogil=True, parallel=True)
-def important(random_func, bottom, top, sample_num):
+def important(funct, bottom, top, sample_num):
     # 在均匀分布中生成x
     y = np.random.uniform(bottom, top, sample_num)
     # 计算函数值与概率分布值的比例
     ## 概率分布函数: 1/2pi,即均匀分布
-    percent = random_func(y) / (1 / (2 * np.pi))
+    percent = funct(y) / (1 / (2 * np.pi))
     # 积分值
     dist = np.mean(percent)
     return dist
 
 
 # 重要性采样 有CUDA
-## 参数:随机数函数,最小值,最大值,样本量
+## 参数:原函数,最小值,最大值,样本量
 def cuda_important(bottom, top, sample_num):
     def func(x):
         return 2 * cp.sin(x) * (x**3 + x**2 + 2 * x + 3)
@@ -102,9 +102,9 @@ def cuda_important(bottom, top, sample_num):
 
 
 # 分层采样
-## 参数:随机数函数,最小值,最大值,样本量,分层层数
+## 参数:原函数,最小值,最大值,样本量,分层层数
 @jit(nopython=True, nogil=True, parallel=True)
-def layer(random_func, bottom, top, sample_num, layers):
+def layer(funct, bottom, top, sample_num, layers):
     dist = 0.0
     # 减少重复计算
     width = (top - bottom) / layers
@@ -116,14 +116,14 @@ def layer(random_func, bottom, top, sample_num, layers):
             sample_num // layers,
         )
         # 单层积分
-        lay_dist = np.mean(random_func(lay_sample))
+        lay_dist = np.mean(funct(lay_sample))
         # 加权平均区间积分
         dist += lay_dist * width
     return dist
 
 
 # 分层采样 有CUDA 非向量化
-## 参数:随机数函数,最小值,最大值,样本量,分层层数
+## 参数:原函数,最小值,最大值,样本量,分层层数
 def cuda_for_layer(bottom, top, sample_num, layers):
     def func(x):
         return 2 * cp.sin(x) * (x**3 + x**2 + 2 * x + 3)
@@ -146,7 +146,7 @@ def cuda_for_layer(bottom, top, sample_num, layers):
 
 
 # 分层采样 有CUDA
-## 参数:随机数函数,最小值,最大值,样本量,分层层数
+## 参数:原函数,最小值,最大值,样本量,分层层数
 def cuda_layer(bottom, top, sample_num, layers):
     def func(x):
         return 2 * cp.sin(x) * (x**3 + x**2 + 2 * x + 3)
