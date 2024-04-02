@@ -23,21 +23,14 @@
 ### 展示内容
 
 1. 一般方法Numba开启与否时的运行情况
-  - 无向量 关闭 nor_dis_func(), dis_simple()
-  - 无向量 开启 nor_enab_func(), simple()
+  - 关闭 dis_func(), dis_simple()
+  - 开启 enab_func(), simple()
 
-  - 有向量 关闭 vec_dis_func(), dis_simple()
-  - 有向量 开启 vec_enab_func(), simple()
+2. 多个算法间的速度 结果 x y拟合
+  - CPU下三种方法 enab_func ,cuda...
+  - GPU下三种方法 enab_func ,cuda...
 
-2. 一般方法f(x)向量化与否时生成y用时
-  - 无向量 nor_enab_func, simple()
-  - 有向量 vec_enab_func, simple()
-
-3. 多个算法间的速度 结果 x y拟合
-  - CPU下三种方法 vec_enab_func ,cuda...
-  - GPU下三种方法 vec_enab_func ,cuda...
-
-4. 单个方法在不同样本量下的结果区别
+3. 单个方法在不同样本量下的结果区别
   - 10**(9-2)
 
 ## 使用
