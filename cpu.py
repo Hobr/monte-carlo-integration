@@ -1,20 +1,19 @@
-from time import sleep
+import time
 from timeit import timeit
 
+import matplotlib.pyplot as plt
 import numpy as np
 from numba import jit
 
-# 总执行次数
-for_time = 1
-# 随机数个数
-times = 10**9 + (7 * 10**8)
-# 分层层数
-layers = 10**4
 
-# 下标(x最小值)
-bottom = 0
-# 上标(x最大值)
-top = 2 * np.pi
+# 计算CPU时间
+## 参数: 被测速函数, **函数参数
+def calculate_cpu_time(func, *args, **kwargs):
+    start_time = time.perf_counter()
+    result = func(*args, **kwargs)
+    end_time = time.perf_counter()
+    cpu_time = end_time - start_time
+    return cpu_time, result
 
 
 # 函数式
@@ -28,38 +27,37 @@ def func(x):
 
 
 # 常规实现
+## 参数:最小值,最大值,样本量
 @jit(nopython=True, nogil=True, parallel=True)
-def simple():
+def simple(bottom, top, sample_num):
     # 在均匀分布中生成x
-    random_x = np.random.uniform(bottom, top, times)
+    random_x = np.random.uniform(bottom, top, sample_num)
     # 计算y/积分和
     integ_sum = func(random_x)
     # y的平均数*(top-bottom) 积分中值
     dist = np.multiply(np.mean(integ_sum), np.subtract(top, bottom))
-
-    print(dist)
     return dist
 
 
 # 重要性采样
+## 参数:最小值,最大值,样本量
 @jit(nopython=True, nogil=True, parallel=True)
-def important():
+def important(bottom, top, sample_num):
     # 在均匀分布中生成x
-    y = np.random.uniform(bottom, top, times)
+    y = np.random.uniform(bottom, top, sample_num)
     # 计算函数值与概率分布值的比例
     ## 概率分布函数: 1/2pi,即均匀分布
     ## func(y) / (1 / (2 * np.pi))
     percent = np.divide(func(y), np.divide(1, np.multiply(2, np.pi)))
     # 积分值
     dist = np.mean(percent)
-
-    print(dist)
     return dist
 
 
 # 分层采样
+## 参数:最小值,最大值,样本量,分层层数
 @jit(nopython=True, nogil=True, parallel=True)
-def layer():
+def layer(bottom, top, sample_num, layers):
     dist = 0.0
     for i in np.arange(layers):
         # 单层随机数
@@ -71,8 +69,8 @@ def layer():
                 bottom,
                 np.multiply(np.add(i, 1), np.divide(np.subtract(top, bottom), layers)),
             ),
-            # times // layers,
-            np.floor_divide(times, layers),
+            # sample_num // layers,
+            np.floor_divide(sample_num, layers),
         )
         # 单层积分
         lay_dist = np.mean(func(lay_sample))
@@ -81,23 +79,31 @@ def layer():
         dist = np.add(
             dist, np.multiply(lay_dist, np.divide(np.subtract(top, bottom), layers))
         )
-
-    print(dist)
     return dist
 
 
-print(
-    "总执行次数",
-    for_time,
-    "\n随机数个数",
-    times,
-    "\n分层层数:",
-    layers,
-)
-print("===========CPU执行===========")
-print("一般实现时间:", timeit("simple()", globals=globals(), number=for_time))
-sleep(3)
-print("重要性采样时间:", timeit("important()", globals=globals(), number=for_time))
-sleep(3)
-print("分层采样时间:", timeit("layer()", globals=globals(), number=for_time))
-sleep(3)
+# 总执行次数
+total_run = 1
+# 样本个数
+sample_num = 10**9 + (7 * 10**8)
+# 分层层数
+layers = 10**4
+
+# 下标(x最小值)
+bottom = 0
+# 上标(x最大值)
+top = 2 * np.pi
+
+print("总执行次数", total_run, ",样本个数", sample_num, ",分层层数:", layers)
+
+for i in range(total_run):
+    print("======== CPU第", i, "次执行 ========")
+    cpu_time, result = calculate_cpu_time(simple, bottom, top, sample_num)
+    print("一般实现时间:", cpu_time, "值:", result)
+    time.sleep(3)
+    cpu_time, result = calculate_cpu_time(important, bottom, top, sample_num)
+    print("重要性采样时间:", cpu_time, "值:", result)
+    time.sleep(3)
+    cpu_time, result = calculate_cpu_time(layer, bottom, top, sample_num, layers)
+    print("分层采样时间:", cpu_time, "值:", result)
+    time.sleep(3)

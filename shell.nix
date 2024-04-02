@@ -22,7 +22,6 @@ in
               numbaWithCuda
               cupy
               matplotlib
-              scipy
             ]))
         ]
       )
