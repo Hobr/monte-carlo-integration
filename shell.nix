@@ -21,6 +21,7 @@ in
               pip
               numba
               cupy
+              scipy
               matplotlib
             ]))
         ]

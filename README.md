@@ -1,6 +1,6 @@
 # 蒙特卡洛积分计算法
 
-> 运用了许多黑魔法来使用蒙特卡洛法计算定积分
+> 运用了一些黑魔法来使用蒙特卡洛法计算定积分
 
 南京理工大学 2024年 基于解释性语言的高效科学计算 课程大作业
 
@@ -10,27 +10,24 @@
 
 1. 无Numba 
 2. Numba
-3. Numba+CUDA
+3. CUDA
 
 ### 横向
 
-1. 无向量一般算法
-2. 一般算法
-3. 重要性采样
-4. 分层采样
+1. 一般算法
+2. 重要性采样
+3. 分层采样
+4. CUDA 分层采样
 
 ### 展示内容
 
-1. 一般方法Numba开启与否时的运行情况
-  - 关闭 dis_func(), dis_simple()
-  - 开启 enab_func(), simple()
-
-2. 多个算法间的速度 结果 x y拟合
-  - CPU下三种方法 enab_func ,cuda...
-  - GPU下三种方法 enab_func ,cuda...
-
-3. 单个方法在不同样本量下的结果区别
-  - 10**(9-2)
+- 一般方法Numba开启与否时的运行情况
+- x,y拟合图
+- 同一样本量下不同方法速度对比
+- 单个方法在不同样本量下的结果区别
+- 有无CUDA对比
+- CUDA分层采样有无向量化下速度的对比
+- 不同样本量下的值与真实值对比
 
 ## 使用
 
@@ -60,11 +57,7 @@ python main.py
 <https://www.labri.fr/perso/nrougier/from-python-to-numpy/>
 <https://www.zhihu.com/question/67310504>
 <https://www.nvidia.cn/glossary/data-science/numpy/>
-<https://developer.nvidia.com/blog/numba-python-cuda-acceleration/>
 <https://developer.nvidia.com/blog/copperhead-data-parallel-python/>
-<https://github.com/ContinuumIO/gtc2017-numba>
 <https://developer.nvidia.com/blog/seven-things-numba/>
 <https://developer.nvidia.com/blog/gpu-accelerated-graph-analytics-python-numba/>
-<https://numba.pydata.org/numba-doc/latest/cuda/overview.html#terminology>
 <https://numpy.org/doc/stable/user/absolute_beginners.html#plotting-arrays-with-matplotlib>
-<https://cuda.juliagpu.org/stable/>
