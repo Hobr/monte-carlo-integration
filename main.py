@@ -1,6 +1,7 @@
 import time
 
 import cupy as cp
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 from numba import jit
@@ -164,17 +165,43 @@ def cuda_layer(bottom, top, sample_num, layers):
     return dist
 
 
-# 总执行次数
-total_run = 3
-# 样本个数
-sample_num = 10**8
-# 分层层数
-layers = 10**4
+# 一般方法Numba开启与否时的运行情况
+def diagram_1(dis, enab):
+    x = range(len(dis))
+
+    plt.plot(x, dis, label="Disable")
+    plt.plot(x, enab, label="Enable")
+
+    plt.title("Numba开启与否对运行时间的影响", fontproperties=font)
+    plt.xlabel("用时", fontproperties=font)
+    plt.ylabel("用时", fontproperties=font)
+
+    plt.legend()
+
+
+# 统计
+font = matplotlib.font_manager.FontProperties(fname="ref/font.otf")
+## 一般方法Numba开启与否时的运行情况
+dis_time_dict = []
+enab_time_dict = []
+## 同一样本量下不同方法速度对比
+## 单个方法在不同样本量下的结果区别
+## 有无CUDA对比
+## CUDA分层采样有无向量化下速度的对比
+## 不同样本量下的值与真实值对比
 
 # 下标(x最小值)
 bottom = 0
 # 上标(x最大值)
 top = 2 * np.pi
+
+# 总执行次数
+total_run = 8
+# 样本个数
+sample_num = 10**3
+# 分层层数
+layers = 10**3
+
 # 真实积分估值
 about = integrate.quad(dis_func, bottom, top)
 
@@ -186,12 +213,19 @@ for i in range(total_run):
     print("一般方法Numba开启与否时的运行情况")
     print("______________________________")
     cpu_time, result = calculate_cpu_time(dis_simple, dis_func, bottom, top, sample_num)
+    if i != 0:
+        dis_time_dict.append(cpu_time)
     print("无Numba:", cpu_time, "值:", result)
     time.sleep(3)
 
     cpu_time, result = calculate_cpu_time(simple, enab_func, bottom, top, sample_num)
+    if i != 0:
+        enab_time_dict.append(cpu_time)
     print("有Numba:", cpu_time, "值:", result)
     time.sleep(3)
+
+diagram_1(dis_time_dict, enab_time_dict)
+plt.show()
 
 for i in range(total_run):
     print("======== 第", i + 1, "次执行 ========")
