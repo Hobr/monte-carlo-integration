@@ -1,14 +1,15 @@
-from timeit import timeit
 from time import sleep
+from timeit import timeit
+
 import numpy as np
 from numba import jit
 
 # 总执行次数
-for_time = 3
+for_time = 1
 # 随机数个数
 times = 10**9 + (7 * 10**8)
 # 分层层数
-layers = 10**5
+layers = 10**4
 
 # 下标(x最小值)
 bottom = 0
