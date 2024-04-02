@@ -18,7 +18,7 @@ top = 2 * np.pi
 
 # 函数式
 ## y(x) = 2sin(x) (x^3+ x^2+ 2x+ 3)
-@jit(nopython=True, parallel=True)
+@jit(nopython=True, nogil=True, parallel=True)
 def func(x):
     return np.multiply(
         np.multiply(np.sin(x), 2),
@@ -27,7 +27,7 @@ def func(x):
 
 
 # 常规实现
-@jit(nopython=True, parallel=True)
+@jit(nopython=True, nogil=True, parallel=True)
 def simple():
     # 在均匀分布中生成x
     random_x = np.random.uniform(bottom, top, times)
@@ -41,7 +41,7 @@ def simple():
 
 
 # 重要性采样
-@jit(nopython=True, parallel=True)
+@jit(nopython=True, nogil=True, parallel=True)
 def important():
     # 在均匀分布中生成x
     y = np.random.uniform(bottom, top, times)
@@ -57,7 +57,7 @@ def important():
 
 
 # 分层采样
-@jit(nopython=True, parallel=True)
+@jit(nopython=True, nogil=True, parallel=True)
 def layer():
     dist = 0.0
     for i in np.arange(layers):
