@@ -188,7 +188,7 @@ def diagram_1(dis, enab):
 
 
 ## 同一样本量下不同方法速度对比
-def diagram_2(speed):
+def diagram_2(speed, large):
     print(speed)
     plt.style.use("seaborn-v0_8")
 
@@ -202,9 +202,15 @@ def diagram_2(speed):
         "CUDA Vector Layer"
     ]
 
-    plt.bar(range(len(speed)), speed)
+    plt.bar(name, speed)
 
-    plt.title("同一样本量下不同算法及运行方式的速度对比", fontproperties=font)
+    plt.title("样本量为" + str(large) + "时不同算法及运行方式的速度", fontproperties=font)
+
+    for key, value in speed.items():
+        speed[key] = round(value, 5)
+
+    for i, val in enumerate(speed):
+        plt.text(i, val, str(val), ha="center", va="bottom")
 
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     filename = f"img/plot_{current_time}.png"
@@ -221,6 +227,8 @@ def diagram_3(input, lab):
 
     plt.title("样本量不同时" + lab + "方式的结果对比", fontproperties=font)
 
+    plt.legend()
+
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     filename = f"img/plot_{current_time}.png"
     plt.savefig(filename)
@@ -235,7 +243,9 @@ def diagram_4(no_cuda, with_cuda):
     plt.plot(no_cuda, label="Without CUDA")
     plt.plot(with_cuda, label="With CUDA")
 
-    plt.title("有无CUDA时的速度对比", fontproperties=font)
+    plt.title("CUDA对速度的影响", fontproperties=font)
+
+    plt.legend()
 
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     filename = f"img/plot_{current_time}.png"
@@ -252,6 +262,8 @@ def diagram_5(with_vec, no_vec):
     plt.plot(no_vec, label="Without Vector")
 
     plt.title("运算向量化对计算的影响", fontproperties=font)
+
+    plt.legend()
 
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     filename = f"img/plot_{current_time}.png"
@@ -322,7 +334,7 @@ for i in range(total_run):
     print("______________________________")
     print("单个方法在不同样本量下的结果区别")
     print("______________________________")
-    for j in range(4, 8):
+    for j in range(4, 7):
         for_num = 10 ** (j + 1)
         for_layers = 10 ** (j // 2)
         print("样本个数", for_num)
@@ -393,15 +405,24 @@ for i in range(total_run):
             with_vec.append(cpu_time)
         print("CUDA 分层抽样时间:", cpu_time, "层数:", for_layers, "值:", result)
         time.sleep(3)
-        diagram_2(s_speed)
+        diagram_2(s_speed, for_num)
         s_speed.clear()
 
-diagram_3(a_dict, "一般实现")
-diagram_3(b_dict, "重要性采样")
-diagram_3(c_dict, "分层抽样")
-diagram_3(d_dict, "CUDA一般实现")
-diagram_3(e_dict, "CUDA重要性采样")
-diagram_3(f_dict, "CUDA非向量化分层抽样")
-diagram_3(g_dict, "CUDA向量化分层抽样")
+time.sleep(1)
+diagram_3(a_dict, "Normal")
+time.sleep(1)
+diagram_3(b_dict, "Important")
+time.sleep(1)
+diagram_3(c_dict, "Layer")
+time.sleep(1)
+diagram_3(d_dict, "CUDA Normal")
+time.sleep(1)
+diagram_3(e_dict, "CUDA Important")
+time.sleep(1)
+diagram_3(f_dict, "CUDA Layer")
+time.sleep(1)
+diagram_3(g_dict, "CUDA Vector Layer")
+time.sleep(1)
 diagram_4(no_cuda, with_cuda)
+time.sleep(1)
 diagram_5(with_vec, no_vec)
