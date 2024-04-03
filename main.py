@@ -189,7 +189,8 @@ def diagram_1(dis, enab):
 
 
 ## 同一样本量下不同方法速度对比
-def diagram_2(speed, large):
+def diagram_2(old_speed, large):
+    speed = [round(num, 6) for num in old_speed]
     print(speed, large)
     plt.style.use("seaborn-v0_8")
 
