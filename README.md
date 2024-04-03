@@ -1,4 +1,4 @@
-# 蒙特卡洛积分计算法
+# [蒙特卡洛积分计算](https://github.com/Hobr/monte-carlo-integration/)
 
 > 运用了一些黑魔法来使用蒙特卡洛法计算定积分
 
@@ -8,7 +8,7 @@
 
 ### 纵向
 
-1. 无Numba 
+1. 无Numba
 2. Numba
 3. CUDA
 
