@@ -168,6 +168,8 @@ def cuda_layer(bottom, top, sample_num, layers):
 # 一般方法Numba开启与否时的运行情况
 def diagram_1(dis, enab):
     print(dis, enab)
+    plt.style.use('bmh')
+
     x = range(len(dis))
 
     plt.plot(x, dis, label="Disable")
@@ -184,6 +186,8 @@ def diagram_1(dis, enab):
 ## 同一样本量下不同方法速度对比
 def diagram_2(speed):
     print(speed)
+    plt.style.use('bmh')
+    
     name = [
         "Normal"
         "Important"
@@ -204,6 +208,8 @@ def diagram_2(speed):
 ## 单个方法在不同样本量下的结果区别
 def diagram_3(input, lab):
     print(input, lab)
+    plt.style.use('bmh')
+    
     plt.plot(input, label=lab)
 
     plt.title("样本量不同时" + lab + "方式的结果对比", fontproperties=font)
@@ -214,6 +220,8 @@ def diagram_3(input, lab):
 ## 有无CUDA对比
 def diagram_4(no_cuda, with_cuda):
     print(no_cuda, with_cuda)
+    plt.style.use('bmh')
+
     plt.plot(no_cuda, label="Without CUDA")
     plt.plot(with_cuda, label="With CUDA")
 
@@ -225,6 +233,8 @@ def diagram_4(no_cuda, with_cuda):
 ## CUDA分层采样有无向量化下速度的对比
 def diagram_5(with_vec, no_vec):
     print(with_vec, no_vec)
+    plt.style.use('bmh')
+
     plt.plot(with_vec, label="With Vector")
     plt.plot(no_vec, label="Without Vector")
 
@@ -263,7 +273,7 @@ top = 2 * np.pi
 # 总执行次数
 total_run = 3
 # 样本个数
-sample_num = 10**8
+sample_num = 10**5
 # 分层层数
 layers = 10**3
 
@@ -296,14 +306,16 @@ for i in range(total_run):
     print("______________________________")
     print("单个方法在不同样本量下的结果区别")
     print("______________________________")
-    for i in range(4, 8):
-        for_num = 10 ** (i + 1)
-        for_layers = 10 ** (i // 2)
+    for j in range(4, 8):
+        for_num = 10 ** (j + 1)
+        for_layers = 10 ** (j // 2)
         print("样本个数", for_num)
         cpu_time, result = calculate_cpu_time(simple, enab_func, bottom, top, for_num)
         s_speed.append(cpu_time)
-        no_cuda.append(cpu_time)
-        a_dict.append(cpu_time)
+        if j == 1:
+            a_dict.append(cpu_time)
+            no_cuda.append(cpu_time)
+
         print("一般实现时间:", cpu_time, "值:", result)
         time.sleep(3)
 
@@ -311,8 +323,9 @@ for i in range(total_run):
             important, enab_func, bottom, top, for_num
         )
         s_speed.append(cpu_time)
-        no_cuda.append(cpu_time)
-        b_dict.append(cpu_time)
+        if j == 1:
+            b_dict.append(cpu_time)
+            no_cuda.append(cpu_time)
         print("重要性采样时间:", cpu_time, "值:", result)
         time.sleep(3)
 
@@ -320,15 +333,17 @@ for i in range(total_run):
             layer, enab_func, bottom, top, for_num, for_layers
         )
         s_speed.append(cpu_time)
-        no_cuda.append(cpu_time)
-        c_dict.append(cpu_time)
+        if j == 1:
+            c_dict.append(cpu_time)
+            no_cuda.append(cpu_time)
         print("分层抽样时间:", cpu_time, "层数:", for_layers, "值:", result)
         time.sleep(3)
 
         cpu_time, result = calculate_cpu_time(cuda_simple, bottom, 2 * cp.pi, for_num)
         s_speed.append(cpu_time)
-        with_cuda.append(cpu_time)
-        d_dict.append(cpu_time)
+        if j == 1:
+            d_dict.append(cpu_time)
+            with_cuda.append(cpu_time)
         print("CUDA 一般实现时间:", cpu_time, "值:", result)
         time.sleep(3)
 
@@ -336,8 +351,9 @@ for i in range(total_run):
             cuda_important, bottom, 2 * cp.pi, for_num
         )
         s_speed.append(cpu_time)
-        with_cuda.append(cpu_time)
-        e_dict.append(cpu_time)
+        if j == 1:
+            e_dict.append(cpu_time)
+            with_cuda.append(cpu_time)
         print("CUDA 重要性采样时间:", cpu_time, "值:", result)
         time.sleep(3)
 
@@ -345,8 +361,9 @@ for i in range(total_run):
             cuda_for_layer, bottom, 2 * cp.pi, for_num, layers
         )
         s_speed.append(cpu_time)
-        no_vec.append(cpu_time)
-        f_dict.append(cpu_time)
+        if j == 1:
+            f_dict.append(cpu_time)
+            no_vec.append(cpu_time)
         print("CUDA 分层 非向量化抽样时间:", cpu_time, "层数:", for_layers, "值:", result)
         time.sleep(3)
 
@@ -354,9 +371,10 @@ for i in range(total_run):
             cuda_layer, bottom, 2 * cp.pi, for_num, layers
         )
         s_speed.append(cpu_time)
-        with_cuda.append(cpu_time)
-        with_vec.append(cpu_time)
-        g_dict.append(cpu_time)
+        if j == 1:
+            g_dict.append(cpu_time)
+            with_cuda.append(cpu_time)
+            with_vec.append(cpu_time)
         print("CUDA 分层抽样时间:", cpu_time, "层数:", for_layers, "值:", result)
         time.sleep(3)
         diagram_2(s_speed)
