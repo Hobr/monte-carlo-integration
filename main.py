@@ -190,6 +190,7 @@ def diagram_1(dis, enab):
 
 ## 同一样本量下不同方法速度对比
 def diagram_2(speed, large):
+    print(speed, large)
     plt.style.use("seaborn-v0_8")
 
     name = [
@@ -201,10 +202,6 @@ def diagram_2(speed, large):
         "CUDA Layer",
         "CUDA Vector Layer",
     ]
-
-    speed = {round(num, 6) for num in speed}
-
-    print(speed)
 
     plt.bar(range(len(speed)), speed)
     plt.xticks(range(len(speed)), name, fontsize=6)
@@ -301,9 +298,9 @@ bottom = 0
 top = 2 * np.pi
 
 # 总执行次数
-total_run = 3
+total_run = 5
 # 样本个数
-sample_num = 10**6
+sample_num = 10**8
 # 分层层数
 layers = 10**3
 
@@ -336,7 +333,7 @@ for i in range(total_run):
     print("______________________________")
     print("单个方法在不同样本量下的结果区别")
     print("______________________________")
-    for j in range(4, 6):
+    for j in range(4, 8):
         for_num = 10 ** (j + 1)
         for_layers = 10 ** (j // 2)
         print("样本个数", for_num)
