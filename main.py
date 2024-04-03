@@ -189,25 +189,25 @@ def diagram_1(dis, enab):
 
 ## 同一样本量下不同方法速度对比
 def diagram_2(speed, large):
-    print(speed)
     plt.style.use("seaborn-v0_8")
 
     name = [
-        "Normal"
-        "Important"
-        "Layer"
-        "CUDA Normal"
-        "CUDA Important"
-        "CUDA Layer"
-        "CUDA Vector Layer"
+        "Normal",
+        "Important",
+        "Layer",
+        "CUDA Normal",
+        "CUDA Important",
+        "CUDA Layer",
+        "CUDA Vector Layer",
     ]
 
-    plt.bar(name, speed)
+    speed = {round(num, 5) for num in speed}
 
+    print(speed)
+
+    plt.bar(range(len(speed)), speed)
+    plt.xticks(range(len(speed)), name, rotation=45)
     plt.title("样本量为" + str(large) + "时不同算法及运行方式的速度", fontproperties=font)
-
-    for key, value in speed.items():
-        speed[key] = round(value, 5)
 
     for i, val in enumerate(speed):
         plt.text(i, val, str(val), ha="center", va="bottom")
@@ -223,11 +223,9 @@ def diagram_3(input, lab):
     print(input, lab)
     plt.style.use("seaborn-v0_8")
 
-    plt.plot(input, label=lab)
+    plt.plot(input)
 
     plt.title("样本量不同时" + lab + "方式的结果对比", fontproperties=font)
-
-    plt.legend()
 
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     filename = f"img/plot_{current_time}.png"
