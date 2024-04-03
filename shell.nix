@@ -13,6 +13,7 @@ in
     buildInputs =
       (
         with pkgs; [
+          julia
           (python3.withPackages (python-pkgs:
             with python-pkgs; [
               isort
@@ -29,7 +30,6 @@ in
       ++ (
         with pkg-unstable; [
           linuxPackages.nvidia_x11
-          julia
           cudatoolkit
           cudaPackages.cudnn
         ]
