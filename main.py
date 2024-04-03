@@ -171,13 +171,14 @@ def diagram_1(dis, enab):
     print(dis, enab)
     plt.style.use("seaborn-v0_8")
 
-    x = range(len(dis))
+    plt.plot(range(1, len(dis) + 1), dis, label="Disable")
+    plt.plot(range(1, len(dis) + 1), enab, label="Enable")
 
-    plt.plot(x, dis, label="Disable")
-    plt.plot(x, enab, label="Enable")
+    plt.xticks(range(1, len(dis) + 1))
 
     plt.title("Numba开启与否对运行时间的影响", fontproperties=font)
     plt.ylabel("时间", fontproperties=font)
+    plt.xlabel("执行次数", fontproperties=font)
 
     plt.legend()
 
@@ -201,13 +202,16 @@ def diagram_2(speed, large):
         "CUDA Vector Layer",
     ]
 
-    speed = {round(num, 5) for num in speed}
+    speed = {round(num, 6) for num in speed}
 
     print(speed)
 
     plt.bar(range(len(speed)), speed)
-    plt.xticks(range(len(speed)), name, rotation=45)
+    plt.xticks(range(len(speed)), name, fontsize=6)
     plt.title("样本量为" + str(large) + "时不同算法及运行方式的速度", fontproperties=font)
+
+    plt.ylabel("时间", fontproperties=font)
+    plt.xlabel("方式", fontproperties=font)
 
     for i, val in enumerate(speed):
         plt.text(i, val, str(val), ha="center", va="bottom")
@@ -219,11 +223,11 @@ def diagram_2(speed, large):
 
 
 ## 单个方法在不同样本量下的结果区别
-def diagram_3(input, lab):
-    print(input, lab)
+def diagram_3(inp, lab):
+    print(inp, lab)
     plt.style.use("seaborn-v0_8")
 
-    plt.plot(input)
+    plt.plot(range(len(inp)), inp)
 
     plt.title("样本量不同时" + lab + "方式的结果对比", fontproperties=font)
 
@@ -299,7 +303,7 @@ top = 2 * np.pi
 # 总执行次数
 total_run = 3
 # 样本个数
-sample_num = 10**5
+sample_num = 10**6
 # 分层层数
 layers = 10**3
 
@@ -332,7 +336,7 @@ for i in range(total_run):
     print("______________________________")
     print("单个方法在不同样本量下的结果区别")
     print("______________________________")
-    for j in range(4, 7):
+    for j in range(4, 6):
         for_num = 10 ** (j + 1)
         for_layers = 10 ** (j // 2)
         print("样本个数", for_num)
@@ -352,6 +356,7 @@ for i in range(total_run):
         if i == 1:
             b_dict.append(cpu_time)
             no_cuda.append(cpu_time)
+
         print("重要性采样时间:", cpu_time, "值:", result)
         time.sleep(3)
 
@@ -362,6 +367,7 @@ for i in range(total_run):
         if i == 1:
             c_dict.append(cpu_time)
             no_cuda.append(cpu_time)
+
         print("分层抽样时间:", cpu_time, "层数:", for_layers, "值:", result)
         time.sleep(3)
 
@@ -370,6 +376,7 @@ for i in range(total_run):
         if i == 1:
             d_dict.append(cpu_time)
             with_cuda.append(cpu_time)
+
         print("CUDA 一般实现时间:", cpu_time, "值:", result)
         time.sleep(3)
 
@@ -380,6 +387,7 @@ for i in range(total_run):
         if i == 1:
             e_dict.append(cpu_time)
             with_cuda.append(cpu_time)
+
         print("CUDA 重要性采样时间:", cpu_time, "值:", result)
         time.sleep(3)
 
@@ -390,6 +398,7 @@ for i in range(total_run):
         if i == 1:
             f_dict.append(cpu_time)
             no_vec.append(cpu_time)
+
         print("CUDA 分层 非向量化抽样时间:", cpu_time, "层数:", for_layers, "值:", result)
         time.sleep(3)
 
@@ -401,10 +410,12 @@ for i in range(total_run):
             g_dict.append(cpu_time)
             with_cuda.append(cpu_time)
             with_vec.append(cpu_time)
+
         print("CUDA 分层抽样时间:", cpu_time, "层数:", for_layers, "值:", result)
         time.sleep(3)
         diagram_2(s_speed, for_num)
         s_speed.clear()
+        time.sleep(3)
 
 time.sleep(1)
 diagram_3(a_dict, "Normal")
